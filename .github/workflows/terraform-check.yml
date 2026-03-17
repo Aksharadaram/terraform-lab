@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -19,12 +20,19 @@ jobs:
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
-      - name: Terraform Init and Validate
+      - name: Run Terraform Validation and Plan
         run: |
           for dir in assignment-*; do
-            echo "Checking $dir"
+            echo "Running Terraform checks in $dir"
+
             cd $dir
+
             terraform init -backend=false
+
             terraform validate
+
+            echo "Running terraform plan (may skip if provider unavailable)"
+            terraform plan || echo "Terraform plan skipped in CI for $dir"
+
             cd ..
           done
