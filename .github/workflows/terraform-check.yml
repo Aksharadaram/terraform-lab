@@ -1,4 +1,4 @@
-name: Terraform CI
+name: Terraform Validation
 
 on:
   push:
@@ -7,38 +7,60 @@ on:
     branches: [ main ]
 
 jobs:
-  terraform:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2
 
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
+      - name: Terraform Format Check (assignment-1)
+        run: terraform fmt -check
+        working-directory: ./assignment-1
 
-      - name: Run Terraform Validation and Plan
-        run: |
-          set +e
-          for dir in assignment-*; do
-            if [ -f "$dir/main.tf" ]; then
-              echo "Running Terraform checks in $dir"
+      - name: Terraform Init (assignment-1)
+        run: terraform init
+        working-directory: ./assignment-1
 
-              cd $dir
+      - name: Terraform Validate (assignment-1)
+        run: terraform validate
+        working-directory: ./assignment-1
 
-              terraform init -backend=false
-              terraform validate
+      - name: Terraform Format Check (assignment-2)
+        run: terraform fmt -check
+        working-directory: ./assignment-2
 
-              terraform plan
-              if [ $? -ne 0 ]; then
-                echo "Terraform plan skipped in CI for $dir (provider not available)"
-              fi
+      - name: Terraform Init (assignment-2)
+        run: terraform init
+        working-directory: ./assignment-2
 
-              cd ..
-            else
-              echo "Skipping $dir (no Terraform configuration)"
-            fi
-          done
+      - name: Terraform Validate (assignment-2)
+        run: terraform validate
+        working-directory: ./assignment-2
+
+      - name: Terraform Format Check (assignment-3)
+        run: terraform fmt -check
+        working-directory: ./assignment-3
+
+      - name: Terraform Init (assignment-3)
+        run: terraform init
+        working-directory: ./assignment-3
+
+      - name: Terraform Validate (assignment-3)
+        run: terraform validate
+        working-directory: ./assignment-3
+
+      - name: Terraform Format Check (assignment-4)
+        run: terraform fmt -check
+        working-directory: ./assignment-4
+
+      - name: Terraform Init (assignment-4)
+        run: terraform init
+        working-directory: ./assignment-4
+
+      - name: Terraform Validate (assignment-4)
+        run: terraform validate
+        working-directory: ./assignment-4
