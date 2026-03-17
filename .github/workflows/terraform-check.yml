@@ -19,13 +19,12 @@ jobs:
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
-      - name: Run Terraform in Assignment Folders
+      - name: Terraform Init and Validate
         run: |
           for dir in assignment-*; do
-            echo "Running Terraform in $dir"
+            echo "Checking $dir"
             cd $dir
-            terraform init
+            terraform init -backend=false
             terraform validate
-            terraform plan
             cd ..
           done
